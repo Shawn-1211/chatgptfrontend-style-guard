@@ -12,6 +12,8 @@
 
 ---
 
+### npx skills add Shawn-1211/chatgptfrontend-style-guard -a codex[拉取项目]
+
 ## 目录
 
 - [为什么需要它](#为什么需要它)
