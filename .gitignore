@@ -1,0 +1,7 @@
+# 临时与本地文件
+.temp/
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
