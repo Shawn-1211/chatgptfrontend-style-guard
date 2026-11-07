@@ -167,6 +167,25 @@ Tailwind 标准 4px 刻度（`--spacing: .25rem`）。实测常用：**2/3/4/6/8
 | 对话区宽度 | `--kw-chat-max-width: 760px`（组件库默认 800px） | tokens.css |
 | 侧栏折叠态 | 60px、图标 20px、过渡 160ms ease | app.css .kw-sidebar.is-collapsed |
 
+## 6b. 侧栏二级菜单实测证据（v2.3 新增，2026-11-06 三次实测）
+
+> 场景：一级目录下挂可展开的二级菜单 / 部门树 / 知识源分组。此前 v2.1–v2.2 未覆盖，v2.3 补登。
+
+| 项 | 实测原文/值 | 出处 |
+| --- | --- | --- |
+| 树行结构 | `.kw-tree-row { display:flex; align-items:center; gap:2px; border-radius:var(--radius-md) }`（圆角 8） | web/src/styles/ui.css §树 |
+| 树行 hover | `--color-background-primary-soft-alt`（soft 灰底） | ui.css .kw-tree-row:hover |
+| 树行选中 | `--color-surface-tertiary`（三级浅灰底，比一级选中态 gray-100 浅一档） | ui.css .kw-tree-row.is-selected |
+| 展开开关 | `.kw-tree-toggle { width:20px; height:20px; color:var(--color-text-secondary) }`；展开 ChevronDown / 收起 ChevronRight **图标切换，无 rotate 动画** | ui.css + ui/Tree.tsx L61 |
+| 标题 | `.kw-tree-title { padding:6px 6px 6px 2px; font-size:var(--font-text-sm-size)/*14px*/; nowrap+ellipsis }`；行高 32 = 20 开关 + 6×2 | ui.css .kw-tree-title |
+| 节点图标 | `.kw-tree-node-icon svg { 16×16 }`，secondary 色，gap 6px | ui.css .kw-tree-node* |
+| 缩进 | `style={{ paddingLeft: depth * 16 + 4 }}`（基线 4 + 每层 16：4/20/36/52；动态计算无字面量） | ui/Tree.tsx L52 |
+| 分组节点 | `selectable=false` → 标题加 `.is-group`（secondary 灰），点标题即展开收起，不可选中 | Tree.tsx L14/L68 + ui.css .kw-tree-title.is-group |
+| 空占位 | 无子级也渲染 `<span class="kw-tree-toggle" aria-hidden>` 保持对齐 | Tree.tsx L64 |
+| 默认态与动画 | 注释原文：「默认全部展开，点三角收起，点名称选中」；子级直接显隐，无过渡动画 | Tree.tsx L2/L74 |
+| 无障碍 | 注释原文：「键盘与读屏照 WAI-ARIA 的 tree 模式」；`role=tree/treeitem/group` + `aria-expanded` + `aria-selected` | Tree.tsx L4/L44-47 |
+| 管理后台组织树 | `.kw-org-tree { padding:8px; border:1px solid; border-radius:var(--kw-radius-card) }`（卡片容器 12px 圆角） | web/src/styles/admin.css L204 |
+
 ## 7. v1 遗留处置记录
 
 - 2026-11-05 按用户要求从包内删除（移入回收站）：`assets/task-panel.html`（v1 金样例）、`demo/sales-order-entry.html`、`demo/valve-quote.html`（v1 业务演示）及其全部截图与 `.temp` 分析中间产物。

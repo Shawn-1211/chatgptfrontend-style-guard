@@ -36,7 +36,7 @@ OpenaiStack upgrades a style spec from "prompt guidance" into a three-layer mech
 
 1. **Registry**: `SKILL.md` §1 is the single source of truth for every token. Literal values are forbidden in component code; any new value must be **registered first, then landed, then used** — otherwise the checker blocks it.
 2. **Deterministic gating**: `scripts/check-style.py` (rules R1–R11) scans mechanical items line by line before every commit — color, spacing, radius, font size, duration, z-index, token reference. Detection never depends on the model's good behavior.
-3. **Positive examples**: 13 component templates + 5 page skeletons + a full test page, so every generation has a compliant reference instead of only a list of prohibitions.
+3. **Positive examples**: 14 component templates + 5 page skeletons + a full test page, so every generation has a compliant reference instead of only a list of prohibitions.
 
 And none of the values were invented — every single one was **measured from the KnowWork v0.0.2 front-end source code and compiled bundle** (the base being OpenAI's open-source ChatGPT design system, `@openai/apps-sdk-ui`). The evidence chain lives in `references/knowwork-analysis.md`.
 
@@ -186,7 +186,7 @@ chatgptfrontend-style-guard/
 ├── references/
 │   ├── knowwork-analysis.md       # Measured evidence: architecture, full token values, v1→v2 diffs, disposal log
 │   ├── design-tokens.md           # Token landing: Route A/B, semantic class quick reference
-│   ├── component-library.md       # v2 component templates ×13
+│   ├── component-library.md       # v2 component templates ×14 (incl. sidebar submenu)
 │   ├── page-templates.md          # v2 page skeletons ×5
 │   └── framework-adapters.md      # React/Vue/plain-HTML adapters + file-icon registry (§7)
 ├── scripts/
@@ -264,6 +264,7 @@ Linters check *how* code is written (semicolons, ordering, selector complexity);
 
 ## Version history
 
+- **v2.3 (2026-11-06)** — sidebar submenu: measured addition of group/tree navigation (row-start 20×20 toggle on first-level items, ChevronDown/Right icon swap with no rotation; child indent `depth*16+4`, in-tree selected state surface-tertiary, expanded by default, WAI-ARIA tree mode); §1.5 registers the tree-indent formula; component-library adds §14, page-templates skeleton synced, golden sample tested.
 - **v2.2 (2026-11-05)** — guard hardening: added R11 token-reference registry check (`var(--xxx)` names must be registered; enforced on the spec docs themselves); established a single-source-of-truth contract (token names and values live only in SKILL.md §1; references are landable/evidence copies).
 - **v2.1 (2026-11-05)** — audit round: four easing curves, 350ms slow tier, focus / z-index / form-state rules, R10 z-index whitelist, R9 extended to animation; component library and page skeletons fully rewritten for v2; all v1 demos removed, package slimmed to 10 files.
 - **v2 (2026-11-05)** — base switch: from the KnowFlow blue system to **KnowWork measurements** (the official ChatGPT design system); every token rewritten with a traceable evidence chain.

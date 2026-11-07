@@ -150,6 +150,20 @@ button { font-family: inherit; }
 .sidebar.is-collapsed .nav-item, .sidebar.is-collapsed .collapse-btn { justify-content: center; width: 40px; padding: 0; }
 .sidebar.is-collapsed .nav-item svg { width: 20px; height: 20px; }
 
+/* ===== 侧栏二级菜单（v2.3 实测：分组/树形导航，形态同 ui/Tree.tsx） ===== */
+.nav-tree-row { display: flex; align-items: center; gap: 2px; border-radius: var(--radius-md); }
+.nav-tree-row:hover { background: var(--soft); }
+.nav-tree-row.is-selected { background: var(--surface-tertiary); }
+.nav-tree-toggle { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; }
+.nav-tree-toggle svg { width: 16px; height: 16px; }
+.nav-tree-title { flex: 1; min-width: 0; padding: 6px 6px 6px 2px; border: none; background: transparent; color: var(--text); font-size: var(--font-base); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.nav-tree-title.is-group { color: var(--text-secondary); }
+.nav-tree-icon { display: inline-flex; flex: none; color: var(--text-secondary); margin-right: 6px; }
+.nav-tree-icon svg { width: 16px; height: 16px; }
+.nav-sub { display: flex; flex-direction: column; gap: 2px; }
+.nav-sub[hidden] { display: none; }
+.sidebar.is-collapsed .nav-group { display: none; }
+
 /* ===== 左下角固定区：用户菜单（v2：设置藏菜单内） ===== */
 .sidebar-footer { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border); }
 .user-btn {
@@ -476,10 +490,53 @@ button { font-family: inherit; }
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="5" height="5"/><rect x="8.5" y="2.5" width="5" height="5"/><rect x="2.5" y="8.5" width="5" height="5"/><rect x="8.5" y="8.5" width="5" height="5"/></svg>
         <span class="nav-label">工作台</span>
       </button>
-      <button class="nav-item" type="button" onclick="navActive(this)">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 3h11v8h-6l-3 3v-3h-2z"/></svg>
-        <span class="nav-label">会话</span>
-      </button>
+      <div class="nav-group" role="treeitem" aria-expanded="true">
+        <div class="nav-tree-row" style="padding-left: 4px;">
+          <button class="nav-tree-toggle" type="button" onclick="toggleSub(this)" aria-label="收起" aria-expanded="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <button class="nav-tree-title" type="button" onclick="treeActive(this.closest('.nav-tree-row'))">
+            <span class="nav-tree-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 3h11v8h-6l-3 3v-3h-2z"/></svg></span>会话
+          </button>
+        </div>
+        <div class="nav-sub" role="group">
+          <div role="treeitem" aria-selected="true">
+            <div class="nav-tree-row is-selected" style="padding-left: 20px;">
+              <span class="nav-tree-toggle" aria-hidden="true"></span>
+              <button class="nav-tree-title" type="button" onclick="treeActive(this.closest('.nav-tree-row'))">全部会话</button>
+            </div>
+          </div>
+          <div role="treeitem">
+            <div class="nav-tree-row" style="padding-left: 20px;">
+              <span class="nav-tree-toggle" aria-hidden="true"></span>
+              <button class="nav-tree-title" type="button" onclick="treeActive(this.closest('.nav-tree-row'))">我创建的</button>
+            </div>
+          </div>
+          <div role="treeitem">
+            <div class="nav-tree-row" style="padding-left: 20px;">
+              <span class="nav-tree-toggle" aria-hidden="true"></span>
+              <button class="nav-tree-title" type="button" onclick="treeActive(this.closest('.nav-tree-row'))">共享给我</button>
+            </div>
+          </div>
+          <!-- 分组节点（仅展开收起、不可选中）：自身也是 treeitem，缩进 16px → 深层行 20px，合计 36 = depth*16+4 -->
+          <div role="treeitem" aria-expanded="false" style="padding-left: 16px;">
+            <div class="nav-tree-row">
+              <button class="nav-tree-toggle" type="button" onclick="toggleSub(this)" aria-label="展开" aria-expanded="false">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
+              </button>
+              <button class="nav-tree-title is-group" type="button" onclick="toggleSub(this.previousElementSibling)">归档分组</button>
+            </div>
+            <div class="nav-sub" role="group" hidden>
+              <div role="treeitem">
+                <div class="nav-tree-row" style="padding-left: 20px;">
+                  <span class="nav-tree-toggle" aria-hidden="true"></span>
+                  <button class="nav-tree-title" type="button" onclick="treeActive(this.closest('.nav-tree-row'))">2025 年归档</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <button class="nav-item" type="button" onclick="navActive(this)">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.5h5l3 3v10H4z"/><path d="M9 1.5v3h3"/></svg>
         <span class="nav-label">知识库</span>
@@ -877,7 +934,26 @@ function toggleSidebar() {
 /* 侧栏选中态：灰底（v2 禁止彩色实底） */
 function navActive(el) {
   document.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('is-active'); });
+  document.querySelectorAll('.nav-tree-row').forEach(function (n) { n.classList.remove('is-selected'); });
   el.classList.add('is-active');
+}
+
+/* 侧栏二级菜单（v2.3）：树内选中 = surface-tertiary；箭头图标切换（无旋转动画） */
+var CHEV_DOWN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
+var CHEV_RIGHT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>';
+function toggleSub(btn) {
+  var item = btn.closest('[role="treeitem"]');
+  var wasOpen = item.getAttribute('aria-expanded') === 'true';
+  item.setAttribute('aria-expanded', String(!wasOpen));
+  btn.setAttribute('aria-expanded', String(!wasOpen));
+  btn.setAttribute('aria-label', wasOpen ? '展开' : '收起');
+  btn.innerHTML = wasOpen ? CHEV_RIGHT : CHEV_DOWN;
+  var sub = item.querySelector('.nav-sub');
+  if (sub) { sub.hidden = wasOpen; }
+}
+function treeActive(row) {
+  document.querySelectorAll('.nav-tree-row').forEach(function (n) { n.classList.remove('is-selected'); });
+  row.classList.add('is-selected');
 }
 
 /* 左下角用户菜单 */

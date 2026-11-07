@@ -10,6 +10,8 @@
 
 **openaistack-frontend-style**（风格名 **OpenaiStack**）—— 一份 UI 设计规范，做成 AI 智能体可执行、机器可审查的技能包。适用于 HTML / CSS / TS / JS / Vue / React 全栈前端开发。
 
+
+
 ---
 
 ### npx skills add Shawn-1211/chatgptfrontend-style-guard -a codex[拉取项目]
@@ -186,7 +188,7 @@ chatgptfrontend-style-guard/
 ├── references/
 │   ├── knowwork-analysis.md       # 实测证据：架构、全部 Token 值、v1→v2 差异、处置记录
 │   ├── design-tokens.md          # Token 落地：路线 A/B、语义类名速查
-│   ├── component-library.md       # v2 组件模板 ×13 类
+│   ├── component-library.md       # v2 组件模板 ×14 类（含侧栏二级菜单）
 │   ├── page-templates.md          # v2 页面骨架 ×5 种
 │   └── framework-adapters.md     # React/Vue/纯 HTML 适配 + 文件图标注册表（§7）
 ├── scripts/
@@ -264,6 +266,7 @@ lint 管"写法"（分号、顺序、选择器复杂度）；OpenaiStack 管"取
 
 ## 版本历史
 
+- **v2.3（2026-11-06）**——侧栏二级菜单：实测补充分组/树形导航（一级项行首 20×20 展开开关、ChevronDown/Right 图标切换无旋转；子行缩进 `depth*16+4`、树内选中 surface-tertiary、默认全展开、WAI-ARIA tree 模式）；§1.5 登记树缩进递进公式；component-library 新增 §14、page-templates 骨架同步、金样例实测。
 - **v2.2（2026-11-05）**——守门补强：新增 R11 Token 引用登记校验（`var(--xxx)` 引用名必须已登记，规范文档自身也受检）；确立单一事实源契约（Token 名与值唯一以 SKILL.md §一 为准，references 仅落地/证据副本）。
 - **v2.1（2026-11-05）**——审计补缺：四条缓动曲线、慢速档 350ms、焦点 / 层级 / 表单态规则、R10 层级白名单、R9 扩展至 animation；组件模板与页面骨架全面 v2 化；清理全部 v1 demo，包瘦身至 10 个文件。
 - **v2（2026-11-05）**——底座切换：从 KnowFlow 蓝色体系改为 **KnowWork 实测**（ChatGPT 官方设计系统），全部 Token 重写且证据可溯。

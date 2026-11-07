@@ -13,7 +13,7 @@ description_cn: >-
   OpenaiStack 前端界面风格应用技能：为前端开发确定统一的 OpenaiStack UI 风格（v2 · KnowWork 实测底座），含完整
   设计令牌、组件模板库、页面骨架、文件图标注册表与 R1-R11 确定性审查器。一旦确定应用本风格，后续前端开发、
   样式审查均按此规范执行。
-version: v2.2
+version: v2.3
 ---
 
 # SKILL.md · OpenaiStack — 本项目 UI 风格规范（v2 · KnowWork 实测版）
@@ -92,7 +92,7 @@ version: v2.2
 
 ### 1.5 间距（4px 基准网格 + 半档）
 
-Tailwind 标准 4px 刻度（p-1=4px、p-2=8px…），**允许半档** `×1.5`（p-1.5=6、p-2.5=10、p-3.5=14）用于组件内微间距，**允许 2/3px** 用于按钮内图标 gap。登记档：`2/3/4/6/8/10/12/14/16/20/24/28/32/40/48/56/64`（或 0/auto）。5、7、9、11、13、15、17 等未登记值禁止。
+Tailwind 标准 4px 刻度（p-1=4px、p-2=8px…），**允许半档** `×1.5`（p-1.5=6、p-2.5=10、p-3.5=14）用于组件内微间距，**允许 2/3px** 用于按钮内图标 gap。登记档：`2/3/4/6/8/10/12/14/16/20/24/28/32/40/48/56/64`（或 0/auto）。5、7、9、11、13、15、17 等未登记值禁止。树形/分组导航缩进例外：**4px 基线 + 每层 16px 递进**（`depth*16+4`，首层 20px 在档；深层 36/52 等由表达式动态计算产生，代码中不得写死字面量）。
 
 ### 1.6 字号（UI 档 + 标题档）
 
@@ -125,6 +125,9 @@ Tailwind 标准 4px 刻度（p-1=4px、p-2=8px…），**允许半档** `×1.5`�
 ## 二、布局与交互原则（v2 实测规则）
 
 1. **侧边栏**：260px（折叠 60px），padding 12px 8px；菜单项 padding 8px 12px、圆角 8、字号 14；**选中态 = 浅灰底 `#ededed`、文字不变色，与 hover 同款，禁止彩色实底选中态**。
+   - **一级项展开开关（v2.3）**：可展开的一级项行首带 20×20 开关（ChevronRight 收起 / ChevronDown 展开图标切换，无旋转动画）。
+   - **侧栏二级菜单 = 分组/树形导航（v2.3 实测登记）**：挂在一级项下。行形态 = 展开开关（20×20；无子级用同尺寸空占位对齐）+ 节点图标（16px，可选）+ 标题；行 gap 2px、圆角 8、行高 32（标题 padding 6px 6px 6px 2px、字号 14、单行省略）；**缩进 = 4px 基线 + 每层 16px（第一层子级 = 20px；深层按 `paddingLeft: depth*16+4` 动态计算，不写死字面量）**；hover = soft 灰底，**树内选中态 = surface-tertiary 浅灰底 + 正文色**（比一级选中态 gray-100 浅一档，实测同款）；分组节点（仅展开收起、不可选中）标题用 secondary 灰字；**默认全部展开**，展开收起无过渡动画（子级直接显隐）；无障碍按 WAI-ARIA tree 模式（`role=tree/treeitem/group` + `aria-expanded`/`aria-selected`）。模板见 `references/component-library.md` §14。一级菜单项右侧可带 **20×20 展开开关（ChevronRight/ChevronDown 图标切换，无旋转动画）**，展开下挂二级菜单（见下条）。
+2. **侧栏二级菜单（分组/树形导航，v2.3 实测登记）**：挂在一级项下，行形态 = 展开开关（20×20，无子级用同尺寸空占位对齐）+ 节点图标（16px，可选）+ 标题；行 gap 2px、圆角 8、行高 32（标题 padding 6px 6px 6px 2px、14px、单行省略）；**缩进 = 4px 基线 + 每层 16px（第一层子级 = 20px，深层按公式递进）**；hover = soft 灰底，**树内选中态 = surface-tertiary 浅灰底 + 正文色**（比一级选中态浅一档）；分组节点（仅展开收起、不可选中）标题用 secondary 灰字；**默认全部展开**，展开收起无过渡动画（子级直接显隐）；无障碍按 WAI-ARIA tree 模式（`role=tree/treeitem/group` + `aria-expanded`/`aria-selected`，键盘箭头导航）。模板见 `references/component-library.md` §14。
 2. **左下角固定区 = 用户菜单**：border-top 分隔 + 头像（28px 圆形）+ 姓名/邮箱两行；点开含 个人设置 / 回答语言 / 管理后台（仅管理员）/ 退出登录。**不设独立"系统设置"侧栏菜单项**。
 3. **整页永不滚动**（外壳 `overflow: clip`），只有内容层滚动；滚动条色 `--scrollbar`。
 4. **内容卡片化**：卡片圆角 12、1px alpha 边框、**无阴影**；企业级分区（权限/审批/配置）用 border-subtle + `surface-tertiary` 浅灰底，禁止卡片嵌套。
@@ -176,6 +179,7 @@ Tailwind 标准 4px 刻度（p-1=4px、p-2=8px…），**允许半档** `×1.5`�
 
 ## 六、版本记录
 
+- **v2.3（2026-11-06，侧栏二级菜单）**：实测补充 **侧栏二级菜单（分组/树形导航）**——来源 `web/src/ui/Tree.tsx` + `ui.css §树` + `admin.css` org-tree：行 = 20×20 展开开关（ChevronRight/Down 图标切换，无旋转）+ 16px 节点图标 + 14px 标题（行高 32、单行省略）；缩进公式 `depth*16+4`（首层 20px）；树内选中态 surface-tertiary（比一级 gray-100 浅一档）；默认全展开、无过渡动画；WAI-ARIA tree 模式。§1.5 登记树缩进递进公式；component-library 新增 §14 模板、page-templates 骨架同步。
 - **v2.2（2026-11-05，守门补强）**：新增 **R11 Token 引用登记校验**——`var(--xxx)` 引用名必须已登记（灰度档 / 登记 Token 名），**对规范文档自身同样生效**，文档里引用未定义名字（如 `var(--gray-350)`）即拦截；确立**单一事实源契约**：Token 名与值唯一以 §一 为准，references/design-tokens.md 仅落地副本、knowwork-analysis.md 仅证据底稿，冲突一律以 §一 为准并同步修正。
 - **v2.1（2026-11-05，审计补缺）**：新增登记：四条缓动曲线、慢速档 350ms、`--border-focus`/`--scrollbar`/`--backdrop`/`--on-accent`/discovery 紫、行高配对、断点与布局尺寸、z-index 层级档；新增规则：键盘焦点与表单态（§二.11）、R10 层级白名单、R9 扩展至 animation；component-library 与 page-templates 重写为 v2。
 - **v2（2026-11-05）**：按 KnowWork v0.0.2 前端实测全面重写（ChatGPT 官方设计系统底座：灰阶 + alpha 边框 + 黑主按钮 + 灰底选中态 + 4px 网格 + 150ms + 状态点 + 用户菜单左下角）。证据：`references/knowwork-analysis.md`。

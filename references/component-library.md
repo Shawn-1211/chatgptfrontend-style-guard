@@ -210,3 +210,64 @@
 ## 13. 文件类型图标
 
 走注册表（类别形 × 登记语义色 × 扩展名文字，未注册自动兜底），规则与实现见 `references/framework-adapters.md` §7——新增格式只加注册表行，不加颜色、不加组件。
+
+## 14. 侧栏二级菜单（分组/树形导航，v2.3 实测）
+
+> 来源：KnowWork `web/src/ui/Tree.tsx` + `ui.css` §树 + `admin.css` org-tree（v2.3 二次实测）。用于"一级目录下挂可展开的二级菜单"、部门树、知识源分组等场景。
+
+```html
+<ul role="tree" aria-label="任务管理" class="m-0 flex list-none flex-col gap-0.5 p-0">
+  <!-- 一级项（可展开）：展开开关（行首）+ 节点图标 + 标题；默认展开 -->
+  <li role="treeitem" aria-expanded="true" class="list-none">
+    <div class="flex items-center gap-0.5 rounded-md py-1.5 pr-1.5" style="padding-left: 4px;">
+      <button type="button" class="inline-flex h-5 w-5 flex-none items-center justify-center text-secondary" aria-label="收起" aria-expanded="true">
+        <!-- 展开 = ChevronDown；收起 = ChevronRight（图标切换，无旋转动画） -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+      </button>
+      <button type="button" class="min-w-0 flex-1 truncate rounded-md px-2 py-1.5 text-left text-sm text-foreground duration-150 hover:bg-soft">任务管理</button>
+    </div>
+    <!-- 二级菜单（role=group）：每个子节点自身也是 treeitem（aria-selected）；缩进 4+16×depth，depth=1 → 20px -->
+    <ul role="group" class="m-0 flex list-none flex-col gap-0.5 p-0">
+      <li role="treeitem" aria-selected="true" class="list-none">
+        <div class="flex items-center gap-0.5 rounded-md bg-surface-tertiary py-1.5 pr-1.5" style="padding-left: 20px;">
+          <span class="inline-flex h-5 w-5 flex-none" aria-hidden="true"></span>
+          <button type="button" class="min-w-0 flex-1 truncate px-2 py-1.5 text-left text-sm text-foreground">全部任务</button>
+        </div>
+      </li>
+      <li role="treeitem" class="list-none">
+        <div class="flex items-center gap-0.5 rounded-md py-1.5 pr-1.5" style="padding-left: 20px;">
+          <span class="inline-flex h-5 w-5 flex-none" aria-hidden="true"></span>
+          <button type="button" class="min-w-0 flex-1 truncate rounded-md px-2 py-1.5 text-left text-sm text-foreground duration-150 hover:bg-soft">我创建的</button>
+        </div>
+      </li>
+      <!-- 分组节点（仅展开收起、不可选中）：标题用 secondary 灰字；容器缩进 16px + 行内 20px = 36（= depth×16+4，两段都取登记档） -->
+      <li role="treeitem" aria-expanded="false" class="list-none" style="padding-left: 16px;">
+        <div class="flex items-center gap-0.5 rounded-md py-1.5 pr-1.5">
+          <button type="button" class="inline-flex h-5 w-5 flex-none items-center justify-center text-secondary" aria-label="展开" aria-expanded="false">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
+          </button>
+          <button type="button" class="min-w-0 flex-1 truncate rounded-md px-2 py-1.5 text-left text-sm text-secondary duration-150 hover:bg-soft">归档分组</button>
+        </div>
+        <ul role="group" hidden class="m-0 flex list-none flex-col gap-0.5 p-0">
+          <li role="treeitem" class="list-none">
+            <div class="flex items-center gap-0.5 rounded-md py-1.5 pr-1.5" style="padding-left: 20px;">
+              <span class="inline-flex h-5 w-5 flex-none" aria-hidden="true"></span>
+              <button type="button" class="min-w-0 flex-1 truncate rounded-md px-2 py-1.5 text-left text-sm text-foreground duration-150 hover:bg-soft">2025 年归档</button>
+            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+```
+
+关键点（全部实测登记，无新增 Token）：
+- **行形态**：展开开关 20×20（`h-5 w-5`，行首；无子级用同尺寸空占位保持对齐）+ 节点图标 16px（可选，与标题 gap 6px）+ 标题；行 `gap-0.5`（实测 gap 2px）、圆角 8、行高 32；
+- **标题**：14px（text-sm）、单行省略（truncate）、`py-1.5 px-2`；
+- **缩进**：`paddingLeft: depth*16+4`——首层 20px（登记档）；深层在 React 里用表达式动态计算（禁止写死 36/52 字面量），纯 HTML 用"分组容器 16px + 行内 20px"两段登记值组合出 36，语义与公式一致（§1.5 树缩进例外）；
+- **选中态**：树内选中 = `bg-surface-tertiary` 浅灰底 + 正文色（比一级菜单选中态 gray-100 浅一档）；hover = `bg-soft`；
+- **展开/收起**：ChevronDown / ChevronRight 图标切换（无旋转动画、无高度过渡，子级直接显隐，注意 CSS 设了 `display:flex` 时 `hidden` 属性需配 `[hidden]{display:none}` 兜底）；**默认全部展开**；分组节点点标题即展开收起（`is-group` secondary 灰字）；
+- **无障碍**：每个节点都是 `role=treeitem`（叶子带 `aria-selected`，分组带 `aria-expanded`），容器 `role=tree/group`，键盘照 WAI-ARIA tree 模式（上下箭头移动、左右箭头收展）。
+
+React 实现（与 KnowWork `ui/Tree.tsx` 同款）：分组节点 `selectable=false` 点标题展开收起；`aria-expanded={hasChildren ? open : undefined}`；空开关 `<span className="kw-tree-toggle" aria-hidden />` 占位；行缩进 `style={{ paddingLeft: depth * 16 + 4 }}`。

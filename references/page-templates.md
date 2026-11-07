@@ -3,7 +3,7 @@
 > **定位**：写页面时的布局起点（v2 · KnowWork 实测体系），全部通过 `scripts/check-style.py`（0 ERROR）。
 > **前提**：Token 已按 `references/design-tokens.md` 初始化；组件细部直接引用 `references/component-library.md`。
 
-## 1. 应用骨架（侧边栏 260px + 下划线二级菜单 + 卡片内容区）
+## 1. 应用骨架（侧边栏 260px + 可展开二级菜单 + 下划线 Tabs + 卡片内容区）
 
 ```html
 <!-- 整页永不滚动：外壳 overflow-clip，只有内容层滚 -->
@@ -17,7 +17,23 @@
     <nav class="flex flex-col gap-0.5">
       <!-- 选中态 = 浅灰底（与 hover 同款），禁止彩色实底 -->
       <a class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground duration-150 hover:bg-soft" href="#workbench">工作台</a>
-      <a class="flex items-center gap-2 rounded-md bg-soft px-3 py-2 text-sm font-medium text-foreground" href="#tasks">任务管理</a>
+      <!-- 可展开一级项 + 二级菜单（v2.3）：形态见 component-library §14 -->
+      <div role="treeitem" aria-expanded="true" class="flex flex-col gap-0.5">
+        <div class="flex items-center gap-2 rounded-md py-2 pr-1.5" style="padding-left: 8px;">
+          <button type="button" class="inline-flex h-5 w-5 flex-none items-center justify-center rounded-xs text-secondary duration-150 hover:bg-soft" aria-label="收起" aria-expanded="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <a class="min-w-0 flex-1 truncate bg-soft rounded-md px-2 py-2 text-sm font-medium text-foreground" href="#tasks">任务管理</a>
+        </div>
+        <div class="flex items-center gap-2 rounded-md py-2 pr-1.5" style="padding-left: 20px;">
+          <span class="inline-flex h-5 w-5 flex-none" aria-hidden="true"></span>
+          <a class="min-w-0 flex-1 truncate rounded-md bg-surface-tertiary px-2 py-2 text-sm text-foreground" href="#tasks-all">全部任务</a>
+        </div>
+        <div class="flex items-center gap-2 rounded-md py-2 pr-1.5" style="padding-left: 20px;">
+          <span class="inline-flex h-5 w-5 flex-none" aria-hidden="true"></span>
+          <a class="min-w-0 flex-1 truncate rounded-md px-2 py-2 text-sm text-foreground duration-150 hover:bg-soft" href="#tasks-mine">我创建的</a>
+        </div>
+      </div>
       <a class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground duration-150 hover:bg-soft" href="#knowledge">知识库</a>
     </nav>
 
@@ -35,7 +51,7 @@
   </aside>
 
   <div class="flex min-w-0 flex-1 flex-col overflow-clip bg-surface">
-    <!-- 二级菜单：下划线式 Tabs -->
+    <!-- 顶部二级导航：下划线式 Tabs（与侧栏可展开菜单是两种形态，勿混用） -->
     <nav class="flex items-center gap-6 border-b border-border px-6 py-2">
       <button class="border-b-2 border-foreground pb-2.5 text-sm font-medium text-foreground">全部任务</button>
       <button class="border-b-2 border-transparent pb-2.5 text-sm font-medium text-secondary duration-150 hover:text-foreground">我创建的</button>
@@ -49,7 +65,7 @@
 </div>
 ```
 
-关键点：侧栏 260px、选中态灰底无彩色；左下角用户菜单 + border-top 分隔；整页 `overflow-clip`；正文基准 14px。
+关键点：侧栏 260px、选中态灰底无彩色；一级项可展开下挂二级菜单（缩进首层 20px、树内选中 surface-tertiary）；左下角用户菜单 + border-top 分隔；整页 `overflow-clip`；正文基准 14px。
 
 ## 2. 列表页（页头 + 统计卡 + 表格 + 企业级分区）
 
